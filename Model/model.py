@@ -164,7 +164,7 @@ class CustomVAE(VAE):
             #save_latent_space(z[i], join(latent_spaces_dir, f"pred_{name}_{channel_number}_({int(coord_x)},{int(coord_y)}).data"))
             save_latent_space(a, join(train_latent_spaces_dir, f"pred_{name}_{channel_number}_({int(coord_x)},{int(coord_y)}).data"))
 
-        print('start')
+        # print('start')
         
         self.log_dict({f"train_{k}": v for k, v in logs.items()}, on_step=True, on_epoch=False, sync_dist=True)
         return loss
