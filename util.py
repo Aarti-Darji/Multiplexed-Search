@@ -26,8 +26,8 @@ def calculating_stat(loader):
         tot_Mean = tot_Mean / len(loader.dataset)
             
         
-        np.savetxt(path.join("/home/axh5735/projects/MPIR/MPIR-2.0/logs/codex_logs/codex_gray_colon_128_256/stat", "std.gz"), tot_Std.numpy())
-        np.savetxt(path.join("/home/axh5735/projects/MPIR/MPIR-2.0/logs/codex_logs/codex_gray_colon_128_256/stat", "mean.gz"), tot_Mean.numpy())
+        np.savetxt(path.join("/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/stat", "std.gz"), tot_Std.numpy())
+        np.savetxt(path.join("/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/stat", "mean.gz"), tot_Mean.numpy())
 
         
         

@@ -27,7 +27,7 @@ class codex_DataModule(pl.LightningDataModule):
         parser.add_argument(
             "--root",
             type = str,
-            default = "/home/data/nolan_lab/CRC_TMA_A_hyperstacks/bestFocus",
+            default = "/home/data/nolan_lab/Tonsil_hyperstacks/bestFocus",
             help = "Address of the dataset directory."
         )
         
@@ -299,8 +299,8 @@ class codex_DataModule(pl.LightningDataModule):
 
               if self.normalize_transform:
             
-                  std = np.loadtxt(path.join("/home/axh5735/projects/MPIR/MPIR-2.0/logs/codex_logs/codex_gray_colon_128_256/stat", "std.gz"))
-                  mean = np.loadtxt(path.join("/home/axh5735/projects/MPIR/MPIR-2.0/logs/codex_logs/codex_gray_colon_128_256/stat", "mean.gz"))
+                  std = np.loadtxt(path.join("/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/stat", "std.gz"))
+                  mean = np.loadtxt(path.join("/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/stat", "mean.gz"))
 
             
 

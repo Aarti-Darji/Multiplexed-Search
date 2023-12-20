@@ -46,15 +46,15 @@ class codexdataset():
             
             
             self.fnames=[]
-            #i=0
+            i=0
             for file in listdir(self.root):
     
               if file.endswith(".tif"):
                 self.fnames.append(join(self.root, file))
-                #i=i+1
+                i=i+1
 
-              #if i==4:
-                #break
+              if i==4:
+                break
 
            
             self.train_fnames, self.test_fnames=train_test_split(self.fnames, 
@@ -207,15 +207,15 @@ class codexdataset():
            
            print(img.shape[0])
 
-           for i in range (img.shape[0]):
+        #    for i in range (img.shape[0]):
            #for i in range (img.shape[0]):
-           #for i in range (1):
+           for i in range (2):
 
                
                
                coords=[]
                
-               img_ch=img[i,:,:]
+               img_ch=img[i+10,:,:]
 
                #print('max', np.max(img_ch))
                #print('min', np.min(img_ch))
@@ -255,7 +255,7 @@ class codexdataset():
                random.seed(self.patching_seed)
                
         
-               while count < self.num_patches_per_image and spent_time.total_seconds() < 5:
+               while count < self.num_patches_per_image and spent_time.total_seconds() < 3:
               
                     rand_i = random.randint(0, normed_img.shape[0] - self.patch_size)
                     rand_j = random.randint(0, normed_img.shape[1]- self.patch_size)
@@ -282,13 +282,13 @@ class codexdataset():
               
                     if self._filter_whitespace(output, threshold=self.whitespace_threshold):
                         if self.overlap(rand_i, rand_j, coords):
-                            coords.append((rand_i, rand_j,fname,i))
+                            coords.append((rand_i, rand_j,fname,i+10))
                             count += 1
                             #print(count)
                     spent_time = datetime.now() - start_time
 
                
-              #print('""""""""""""""""""""""final""""""""""""' + str(count), i) 
+            #   print('""""""""""""""""""""""final""""""""""""' + str(count), i) 
                
                coords_tot.append(coords)
 

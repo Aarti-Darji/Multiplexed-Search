@@ -1,15 +1,15 @@
 #!/bin/bash
 
-#SBATCH --job-name=zscore_codex_Tonsil_0_128_256
+#SBATCH --job-name=1codex_Tonsil_0_128_256
 #SBATCH --partition=normal
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=16
-#SBATCH --mem-per-cpu=16G
-#SBATCH --gres=gpu:a100:1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem-per-cpu=8G
+#SBATCH --gres=gpu:a100_1g.10gb:2
 #SBATCH --time=120:00:00
-#SBATCH --error=/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/zscore_codex_Tonsil_0_128_256.err
-#SBATCH --output=/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/zscore_codex_Tonsil_0_128_256.out
+#SBATCH --error=/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/1codex_Tonsil_0_128_256.err
+#SBATCH --output=/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/1codex_Tonsil_0_128_256.out
 
 
 
