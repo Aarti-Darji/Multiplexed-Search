@@ -1,4 +1,4 @@
-# #### Libraries
+#### Libraries
 
 # from os import listdir, remove
 # from os.path import join
@@ -84,11 +84,65 @@
 #                 remove(join(self.latent_directory, name))
 
 
+# import json
+# import os
+# from os.path import join
+# from Utils.aux import load_latent_space
+
+# class LatentStitcher:
+#     def __init__(self, latent_directory):
+#         self.latent_directory = latent_directory
+
+#     @property
+#     def parsed_names(self):
+#         parsed_names = {}
+#         for name in os.listdir(self.latent_directory):
+#             if name.endswith(".data"):
+#                 _, _, _, _, _, channel_number, coord = name.split("_")
+#                 name = name.replace('_' + channel_number, '')
+#                 name = name.replace('_' + coord, '')
+#                 fname = name.replace('pred_', '')
+#                 coord = coord.split(".data")[0]
+#                 if fname in parsed_names:
+#                     parsed_names[fname].append(self._str_coord_to_tuple(coord, channel_number))
+#                 else:
+#                     parsed_names[fname] = [self._str_coord_to_tuple(coord, channel_number)]
+#         return parsed_names
+
+#     def stitch(self):
+#         all_images_data = {}
+#         for fname, coords in self.parsed_names.items():
+#             image_matrix = {}
+#             for coord in coords:
+#                 channel, patch_x, patch_y = coord
+#                 latent_file_path = join(self.latent_directory, f"pred_{fname}_{channel}_({patch_x},{patch_y}).data")
+#                 if not os.path.exists(latent_file_path):
+#                     print(f"Warning: File not found {latent_file_path}")
+#                     continue
+#                 latent = load_latent_space(latent_file_path)
+#                 if channel not in image_matrix:
+#                     image_matrix[channel] = []
+#                 image_matrix[channel].append({"patch_x": patch_x, "patch_y": patch_y, "values": latent.numpy().tolist()})
+            
+#             all_images_data[fname] = image_matrix
+
+#         with open(join(self.latent_directory, "latent_matrices.json"), 'w') as outfile:
+#             json.dump(all_images_data, outfile, indent=4)
+
+#     def _str_coord_to_tuple(self, str_coord, channel_number):
+#         coord = str_coord.strip(")(").split(",")
+#         coord_list = [int(c) for c in coord]
+#         channel_number = int(channel_number)
+#         return channel_number, coord_list[0], coord_list[1]
+
+#     def _clean_directory(self, fname):
+#         for name in os.listdir(self.latent_directory):
+#             if name.startswith(f"pred_{fname}") and name.endswith(".data"):
+#                 os.remove(join(self.latent_directory, name))
+
+import numpy as np
 from os import listdir, remove
 from os.path import join
-import pandas as pd
-import torch
-import numpy as np
 from Utils.aux import load_latent_space
 
 class LatentStitcher:
@@ -101,55 +155,41 @@ class LatentStitcher:
         for name in listdir(self.latent_directory):
             if name.endswith(".data"):
                 _, _, _, _, _, channel_number, coord = name.split("_")
-                name = name.replace('_' + channel_number, '').replace('_' + coord, '')
+                name = name.replace('_' + channel_number, '')
+                name = name.replace('_' + coord, '')
                 fname = name.replace('pred_', '')
                 coord = coord.split(".data")[0]
-                if fname in parsed_names.keys():
+                if fname in parsed_names:
                     parsed_names[fname].append(self._str_coord_to_tuple(coord, channel_number))
                 else:
                     parsed_names[fname] = [self._str_coord_to_tuple(coord, channel_number)]
         return parsed_names
 
     def stitch(self):
-        results = pd.DataFrame(columns=["filename", "latent_matrix"])
         for fname, coords in self.parsed_names.items():
-            channel_data = {}
-            for coord in coords:
-                channel_number = coord[2]
-                latent_vector = load_latent_space(join(self.latent_directory, f"pred_{fname}_{channel_number}_({coord[0]},{coord[1]}).data"))
-                if channel_number not in channel_data:
-                    channel_data[channel_number] = []
-                channel_data[channel_number].append(latent_vector.cpu().numpy())  # Loaded as NumPy array
-        
-                image_matrix = []
-                for channel, vectors in channel_data.items():
-                    if len(vectors) > 0:
-                        tensor_vectors = [torch.tensor(vector) for vector in vectors]
-                        image_matrix.append(torch.stack(tensor_vectors))
+            # Determine the shape of the matrix
+            num_channels = max([int(coord[2]) for coord in coords]) + 1
+            num_patches = len(coords)
+            latent_dim = len(load_latent_space(join(self.latent_directory, f"pred_{fname}_{coords[0][2]}_({coords[0][0]},{coords[0][1]}).data")))
 
-                matrix_str = self._matrix_to_string(torch.stack(image_matrix))
-        
-        # Add a new row to the DataFrame
-                index = len(results)
-                results.loc[index, "filename"] = fname
-                results.loc[index, "latent_matrix"] = matrix_str
+            # Initialize matrix
+            matrix = np.zeros((num_channels, num_patches, latent_dim))
 
-            results.to_csv(join(self.latent_directory, "latent_matrices.csv"), index=False)
+            for i, coord in enumerate(coords):
+                latent = load_latent_space(join(self.latent_directory, f"pred_{fname}_{coord[2]}_({coord[0]},{coord[1]}).data"))
+                matrix[int(coord[2]), i, :] = latent
 
+            # Save the matrix
+            np.save(join(self.latent_directory, f"{fname}_latent_matrix.npy"), matrix)
 
-
-    def _matrix_to_string(self, matrix):
-        np_matrix = matrix.numpy()
-        matrix_str = np.array2string(np_matrix, separator=',', max_line_width=np.inf)
-        return matrix_str
+            # Clean up directory
+            self._clean_directory(fname)
 
     def _str_coord_to_tuple(self, str_coord, channel_number):
         coord = str_coord.strip(")(").split(",")
-        coord_list = tuple([int(c) for c in coord] + [channel_number])
-        return coord_list
+        return tuple([int(c) for c in coord] + [channel_number])
 
     def _clean_directory(self, fname):
         for name in listdir(self.latent_directory):
             if name.startswith(f"pred_{fname}") and name.endswith(".data"):
                 remove(join(self.latent_directory, name))
-

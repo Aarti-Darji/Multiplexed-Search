@@ -46,15 +46,15 @@ class codexdataset():
             
             
             self.fnames=[]
-            i=0
+            # i=0
             for file in listdir(self.root):
     
               if file.endswith(".tif"):
                 self.fnames.append(join(self.root, file))
-                i=i+1
+            #     i=i+1
 
-              if i==4:
-                break
+            #   if i==4:
+            #     break
 
            
             self.train_fnames, self.test_fnames=train_test_split(self.fnames, 
@@ -200,8 +200,7 @@ class codexdataset():
            img=self._load_file(fname)
 
            
-           channel_numbers=[0]
-                        # [17, 15, 57, 61, 14, 58, 69, 65, 51, 29]
+           channel_numbers=[0, 17, 15, 57, 61, 14, 58, 69, 65, 51, 29]
            
            print(img.shape[0])
 
@@ -210,7 +209,7 @@ class codexdataset():
 
                coords=[]
                
-               img_ch=img[i+10,:,:]
+               img_ch=img[i,:,:]
 
                #print('max', np.max(img_ch))
                #print('min', np.min(img_ch))
@@ -219,11 +218,11 @@ class codexdataset():
                    continue
                
 
-               Max=np.max( img_ch)
-               Min=np.min( img_ch)
+            #    Max=np.max( img_ch)
+            #    Min=np.min( img_ch)
 
-               img_ch= (img_ch-Min)/(Max-Min)
-               normed_img=img_ch
+            #    img_ch= (img_ch-Min)/(Max-Min)
+            #    normed_img=img_ch
 
 
                #normed_img=self.prenormalization(img_ch)
@@ -240,10 +239,10 @@ class codexdataset():
         
                while count < self.num_patches_per_image and spent_time.total_seconds() < 3:
               
-                    rand_i = random.randint(0, normed_img.shape[0] - self.patch_size)
-                    rand_j = random.randint(0, normed_img.shape[1]- self.patch_size)
+                    rand_i = random.randint(0, img.shape[0] - self.patch_size)
+                    rand_j = random.randint(0, img.shape[1]- self.patch_size)
             
-                    cropped_img=self.cropping(normed_img,rand_i,rand_j)
+                    cropped_img=self.cropping(img,rand_i,rand_j)
 
                     #print(np.min(cropped_img))
                     #print(np.max(cropped_img))
@@ -252,10 +251,10 @@ class codexdataset():
                     output=self._img_to_tensor(cropped_img)
 
               
-                    if self._filter_whitespace(output, threshold=self.whitespace_threshold):
-                        if self.overlap(rand_i, rand_j, coords):
-                            coords.append((rand_i, rand_j,fname,i+10))
-                            count += 1
+                    # if self._filter_whitespace(output, threshold=self.whitespace_threshold):
+                    if self.overlap(rand_i, rand_j, coords):
+                        coords.append((rand_i, rand_j,fname,i))
+                        count += 1
                             #print(count)
                     spent_time = datetime.now() - start_time
 
@@ -341,43 +340,43 @@ class codexdataset():
        
 
    
-    def prenormalization(self,img):   
+    # def prenormalization(self,img):   
         
         
-        #epsilon = 1e-10
-        #img = cv.add(img, epsilon)
+    #     #epsilon = 1e-10
+    #     #img = cv.add(img, epsilon)
 
         
-        img_log=img
+    #     img_log=img
    
-        #img_log = np.log(img)
+    #     #img_log = np.log(img)
         
 
-        min_val = np.min(img_log)
-        max_val = np.max(img_log)
+    #     min_val = np.min(img_log)
+    #     max_val = np.max(img_log)
            
 
-        #normalized_img= (img_log - min_val) / (max_val - min_val)
-        normalized_img= img_log/max_val
+    #     #normalized_img= (img_log - min_val) / (max_val - min_val)
+    #     normalized_img= img_log/max_val
 
 
-        #normalized_img= torch.from_numpy(normalized_img)
+    #     #normalized_img= torch.from_numpy(normalized_img)
        
-        return img
+    #     return img
 
     
 
     
-    def _filter_whitespace(self, tensor_3d, threshold):
+    # def _filter_whitespace(self, tensor_3d, threshold):
             
-        avg= np.mean(np.array(tensor_3d[0]))
-        #g = np.mean(np.array(tensor_3d[1]))
-        #b = np.mean(np.array(tensor_3d[2]))
-        #channel_avg = np.mean(np.array([r, g, b]))
-        if avg<threshold:
-            return True
-        else:
-            return False
+    #     avg= np.mean(np.array(tensor_3d[0]))
+    #     #g = np.mean(np.array(tensor_3d[1]))
+    #     #b = np.mean(np.array(tensor_3d[2]))
+    #     #channel_avg = np.mean(np.array([r, g, b]))
+    #     if avg<threshold:
+    #         return True
+    #     else:
+    #         return False
         
         
     def __getitem__(self, index):
@@ -411,9 +410,9 @@ class codexdataset():
      img=img[channel_number,:,:]
 
 
-     Max=np.max(img)
-     Min=np.min(img)
-     img= (img-Min)/(Max-Min)
+    #  Max=np.max(img)
+    #  Min=np.min(img)
+    #  img= (img-Min)/(Max-Min)
 
      #img=self.prenormalization(img)
      patch=self.cropping(img,coord_x,coord_y)
@@ -424,10 +423,10 @@ class codexdataset():
 
         
 
-     if self.per_image_normalize:
-            std, mean = torch.std_mean(output, dim=(1,2), unbiased=False)
-            norm_trans = transforms.Normalize(mean=mean, std=std)
-            output = norm_trans(output)
+    #  if self.per_image_normalize:
+    #         std, mean = torch.std_mean(output, dim=(1,2), unbiased=False)
+    #         norm_trans = transforms.Normalize(mean=mean, std=std)
+    #         output = norm_trans(output)
 
      if self.transformations is not None:
             output= self.transformations(output)
@@ -446,9 +445,7 @@ class codexdataset():
            return len(self.train_patches)
         
         elif self.dataset_type=='val':
-        
            return len(self.val_patches)
         
         else:
-            
            return len(self.test_patches)
