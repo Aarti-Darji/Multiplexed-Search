@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=8G
-#SBATCH --gres=gpu:a100_1g.10gb:2
+#SBATCH --gres=gpu:a100:1
 #SBATCH --time=120:00:00
 #SBATCH --error=/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/1codex_Tonsil_0_128_256.err
 #SBATCH --output=/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/1codex_Tonsil_0_128_256.out
@@ -22,10 +22,10 @@ function fail {
 source /home/acd9300/miniconda3/etc/profile.d/conda.sh || fail "conda load fail"
 conda activate MPIR || fail "conda activate fail"
 
-cd '/home/acd9300/projects/project2/MPIR-2.0/codex_Model'
+cd '/home/acd9300/projects/project2/MPIR-2.0/codex_Model_updated'
 
 
-python '/home/acd9300/projects/project2/MPIR-2.0/codex_Model/runfile.py' \
+python '/home/acd9300/projects/project2/MPIR-2.0/codex_Model_updated/runfile.py' \
     --transformations_write_dir "/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/transformations" \
     --inv_transformations_read_dir "/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/transformations" \
     --transformations_read_dir "/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_0_128_256/transformations" \

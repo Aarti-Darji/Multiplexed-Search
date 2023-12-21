@@ -200,7 +200,8 @@ class codexdataset():
            img=self._load_file(fname)
 
            
-           channel_numbers=[0, 17, 15, 57, 61, 14, 58, 69, 65, 51, 29]
+           channel_numbers=[0]
+                        # [17, 15, 57, 61, 14, 58, 69, 65, 51, 29]
            
            print(img.shape[0])
 
@@ -209,7 +210,7 @@ class codexdataset():
 
                coords=[]
                
-               img_ch=img[i,:,:]
+               img_ch=img[i+10,:,:]
 
                #print('max', np.max(img_ch))
                #print('min', np.min(img_ch))
