@@ -200,22 +200,16 @@ class codexdataset():
            img=self._load_file(fname)
 
            
-           #channel_numbers=[0, 17, 15, 57, 61, 14, 58, 69, 65, 51, 29]
-           
-           
-           
+           channel_numbers=[0, 17, 15, 57, 61, 14, 58, 69, 65, 51, 29]
            
            print(img.shape[0])
 
-        #    for i in range (img.shape[0]):
-           #for i in range (img.shape[0]):
-           for i in range (2):
+           for i in channel_numbers:
+        #    for i in range (2):
 
-               
-               
                coords=[]
                
-               img_ch=img[i+10,:,:]
+               img_ch=img[i,:,:]
 
                #print('max', np.max(img_ch))
                #print('min', np.min(img_ch))
@@ -230,23 +224,11 @@ class codexdataset():
                img_ch= (img_ch-Min)/(Max-Min)
                normed_img=img_ch
 
-               
-
-               
-               
-
-               
-
 
                #normed_img=self.prenormalization(img_ch)
 
                #print(np.max(normed_img))
 
-               
-
-             
-
-           
                
                count = 0
                start_time = datetime.now()
@@ -265,20 +247,9 @@ class codexdataset():
                     #print(np.min(cropped_img))
                     #print(np.max(cropped_img))
 
-                    
 
-                    
-
-               
-            
-        
-              
                     output=self._img_to_tensor(cropped_img)
 
-
-
-                   
-                                     
               
                     if self._filter_whitespace(output, threshold=self.whitespace_threshold):
                         if self.overlap(rand_i, rand_j, coords):
