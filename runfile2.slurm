@@ -5,7 +5,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=16
-#SBATCH --mem-per-cpu=16G
+#SBATCH --mem-per-cpu=32G
 #SBATCH --gres=gpu:a100:1
 #SBATCH --time=120:00:00
 #SBATCH --error=/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_combined/codex_Tonsil_combined.err
@@ -40,7 +40,7 @@ python '/home/acd9300/projects/project2/MPIR-2.0/codex_Model_updated/runfile.py'
     --logging_dir "/home/acd9300/projects/project2/compressed_images_codex/codexlogs/MPIR/tonsil_logs/codex_Tonsil_combined/tb_logs" \
     --logging_name codex_Tonsil_combined \
     --batch_size 128 \
-    --num_dataloader_workers 8 \
+    --num_dataloader_workers 0 \
     --input_height 64 \
     --latent_dim 256 \
     --lr 0.0001 \

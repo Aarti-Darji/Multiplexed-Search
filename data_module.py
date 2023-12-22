@@ -311,8 +311,8 @@ class codex_DataModule(pl.LightningDataModule):
                   #inverse_transforms_list.insert(0, transforms.Normalize(mean=-mean, std=np.array([1, 1, 1])))
                   #inverse_transforms_list.insert(0, transforms.Normalize(mean=np.array([0, 0, 0]), std=1/std))
 
-                #   inverse_transforms_list.insert(0, transforms.Normalize(mean=-mean, std=np.array([1])))
-                #   inverse_transforms_list.insert(0, transforms.Normalize(mean=np.array([0]), std=1/std))
+                  inverse_transforms_list.insert(0, transforms.Normalize(mean=-mean, std=np.array([1])))
+                  inverse_transforms_list.insert(0, transforms.Normalize(mean=np.array([0]), std=1/std))
 
               if self.resize_transform_size is not None:
                   transforms_list.append(
