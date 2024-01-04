@@ -211,8 +211,8 @@ class codexdataset():
                
                img_ch=img[i,:,:]
 
-               #print('max', np.max(img_ch))
-               #print('min', np.min(img_ch))
+               print('max', np.max(img_ch))
+               print('min', np.min(img_ch))
 
                if np.max(img_ch)==0:
                    continue
@@ -251,12 +251,12 @@ class codexdataset():
                     output=self._img_to_tensor(cropped_img)
 
               
-                    # if self._filter_whitespace(output, threshold=self.whitespace_threshold):
-                    if self.overlap(rand_i, rand_j, coords):
-                        coords.append((rand_i, rand_j,fname,i))
-                        count += 1
+                    if self._filter_whitespace(output, threshold=self.whitespace_threshold):
+                        if self.overlap(rand_i, rand_j, coords):
+                            coords.append((rand_i, rand_j,fname,i))
+                            count += 1
                             #print(count)
-                    spent_time = datetime.now() - start_time
+                        spent_time = datetime.now() - start_time
 
                
             #   print('""""""""""""""""""""""final""""""""""""' + str(count), i) 
@@ -264,7 +264,6 @@ class codexdataset():
                coords_tot.append(coords)
 
            return coords_tot
-
 
     def _img_to_tensor(self, img):
         trans = transforms.Compose([
@@ -288,11 +287,11 @@ class codexdataset():
         cropped_img= img[i: i+self.patch_size, j:j+self.patch_size]    
         cropped_img=cropped_img.astype(np.float32)
 
-        #Max=np.max(cropped_img)
-        #Min=np.min(cropped_img)
+        # Max=np.max(cropped_img)
+        # Min=np.min(cropped_img)
 
         
-        #cropped_img= cropped_img/Max
+        # cropped_img= cropped_img/Max
             
        
         return cropped_img
@@ -318,9 +317,6 @@ class codexdataset():
         else:
             return False
         
-    
-   
-       
         return img
 
     
@@ -367,16 +363,16 @@ class codexdataset():
     
 
     
-    # def _filter_whitespace(self, tensor_3d, threshold):
+    def _filter_whitespace(self, tensor_3d, threshold):
             
-    #     avg= np.mean(np.array(tensor_3d[0]))
-    #     #g = np.mean(np.array(tensor_3d[1]))
-    #     #b = np.mean(np.array(tensor_3d[2]))
-    #     #channel_avg = np.mean(np.array([r, g, b]))
-    #     if avg<threshold:
-    #         return True
-    #     else:
-    #         return False
+        avg= np.mean(np.array(tensor_3d[0]))
+        # g = np.mean(np.array(tensor_3d[1]))
+        # b = np.mean(np.array(tensor_3d[2]))
+        # channel_avg = np.mean(np.array([r, g, b]))
+        if avg<threshold:
+            return True
+        else:
+            return False
         
         
     def __getitem__(self, index):
