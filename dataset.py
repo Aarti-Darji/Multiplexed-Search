@@ -46,15 +46,15 @@ class codexdataset():
             
             
             self.fnames=[]
-            # i=0
+            i=0
             for file in listdir(self.root):
     
               if file.endswith(".tif"):
                 self.fnames.append(join(self.root, file))
-            #     i=i+1
+                i=i+1
 
-            #   if i==4:
-            #     break
+              if i==4:
+                break
 
            
             self.train_fnames, self.test_fnames=train_test_split(self.fnames, 
@@ -204,8 +204,8 @@ class codexdataset():
            
            print(img.shape[0])
 
-           for i in channel_numbers:
-        #    for i in range (2):
+        #    for i in channel_numbers:
+           for i in range (2):
 
                coords=[]
                
@@ -259,7 +259,7 @@ class codexdataset():
                         spent_time = datetime.now() - start_time
 
                
-            #   print('""""""""""""""""""""""final""""""""""""' + str(count), i) 
+                    print('""""""""""""""""""""""final""""""""""""' + str(count), i) 
                
                coords_tot.append(coords)
 
